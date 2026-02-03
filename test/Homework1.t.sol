@@ -3,6 +3,12 @@ pragma solidity ^0.8.20;
 
 import "../src/Homework1.sol";
 
+contract Voter {
+    function vote(Voting voting, address candidate) external {
+        voting.vote(candidate);
+    }
+}
+
 contract Homework1Test {
     Voting private voting;
     Homework1 private hw;
@@ -13,17 +19,28 @@ contract Homework1Test {
     }
 
     function testVoting() public {
-        voting.vote("Alice");
-        voting.vote("Bob");
-        voting.vote("Alice");
+        Voter voter1 = new Voter();
+        Voter voter2 = new Voter();
+        address alice = address(0x1111);
+        address bob = address(0x2222);
 
-        assertEqUint(voting.getVotes("Alice"), 2);
-        assertEqUint(voting.getVotes("Bob"), 1);
+        voter1.vote(voting, alice);
+        voter2.vote(voting, bob);
+
+        assertEqUint(voting.getVotes(alice), 1);
+        assertEqUint(voting.getVotes(bob), 1);
+
+        try voter1.vote(voting, alice) {
+            revert("expected revert");
+        } catch {}
 
         voting.resetVotes();
 
-        assertEqUint(voting.getVotes("Alice"), 0);
-        assertEqUint(voting.getVotes("Bob"), 0);
+        assertEqUint(voting.getVotes(alice), 0);
+        assertEqUint(voting.getVotes(bob), 0);
+
+        voter1.vote(voting, bob);
+        assertEqUint(voting.getVotes(bob), 1);
     }
 
     function testReverseString() public {

@@ -2,11 +2,16 @@
 pragma solidity ^0.8.20;
 
 contract Voting {
-    mapping(string => uint256) private votes;
-    mapping(string => bool) private knownCandidate;
-    string[] private candidates;
+    mapping(address => uint256) private votes;
+    mapping(address => bool) private knownCandidate;
+    mapping(address => bool) private hasVoted;
+    address[] private candidates;
+    address[] private voters;
 
-    function vote(string calldata candidate) external {
+    function vote(address candidate) external {
+        require(!hasVoted[msg.sender], "already voted");
+        hasVoted[msg.sender] = true;
+        voters.push(msg.sender);
         if (!knownCandidate[candidate]) {
             knownCandidate[candidate] = true;
             candidates.push(candidate);
@@ -14,15 +19,23 @@ contract Voting {
         votes[candidate] += 1;
     }
 
-    function getVotes(string calldata candidate) external view returns (uint256) {
+    function getVotes(address candidate) external view returns (uint256) {
         return votes[candidate];
     }
 
     function resetVotes() external {
         uint256 len = candidates.length;
         for (uint256 i = 0; i < len; i++) {
-            votes[candidates[i]] = 0;
+            address candidate = candidates[i];
+            votes[candidate] = 0;
+            knownCandidate[candidate] = false;
         }
+        uint256 voterLen = voters.length;
+        for (uint256 i = 0; i < voterLen; i++) {
+            hasVoted[voters[i]] = false;
+        }
+        delete candidates;
+        delete voters;
     }
 }
 

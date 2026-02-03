@@ -18,3 +18,8 @@
 
 ### 6. :white_check_mark:  二分查找 (Binary Search)
 - 题目描述：在一个有序数组中查找目标值。
+
+
+## 部署到sepolia测试网结果
+[EtherScan](https://sepolia.etherscan.io/tx/0x36d6eb3b841df600fa5af2881e67bc679a723b8f1a4a05ac402517b77c934c6b)
+[BlockScout](https://eth-sepolia.blockscout.com/tx/0x36d6eb3b841df600fa5af2881e67bc679a723b8f1a4a05ac402517b77c934c6b)
